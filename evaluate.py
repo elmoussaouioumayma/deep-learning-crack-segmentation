@@ -20,7 +20,7 @@ import torch
 
 from classical import ClassicalParams, segment
 from data import download_deepcrack, list_pairs, load_pair
-from metrics import evaluate
+from metrics import counts, evaluate, prf
 from predict import load_model, overlay, predict_probs
 
 
@@ -28,6 +28,19 @@ def summary(res_tol, res_strict):
     return {"precision": round(res_tol["precision"], 3), "recall": round(res_tol["recall"], 3),
             "f1_tol2": round(res_tol["f1"], 3), "f1_strict": round(res_strict["f1"], 3),
             "mean_iou": round(res_strict["mean_iou"], 3)}
+
+
+def bootstrap_f1_diff(preds_a, preds_b, trues, tol=2, n=2000, seed=0):
+    """Paired bootstrap over test images: 95 % interval of pooled F1(a) - F1(b)."""
+    ca = np.array([counts(p, t, tol) for p, t in zip(preds_a, trues)])
+    cb = np.array([counts(p, t, tol) for p, t in zip(preds_b, trues)])
+    rng = np.random.default_rng(seed)
+    diffs = []
+    for _ in range(n):
+        idx = rng.integers(0, len(trues), len(trues))
+        diffs.append(prf(ca[idx].sum(0))[2] - prf(cb[idx].sum(0))[2])
+    lo, hi = np.percentile(diffs, [2.5, 97.5])
+    return round(float(lo), 3), round(float(hi), 3)
 
 
 def main():
@@ -59,6 +72,8 @@ def main():
     out["n_test_images"] = len(imgs)
     out["unet_better_on_images"] = int((f_u > f_c).sum())
     out["threshold"] = thr
+    out["f1_tol2_diff_unet_minus_classical_95ci"] = bootstrap_f1_diff(unet, classic, trues)
+    out["median_per_image_f1"] = {"classical": round(float(np.median(f_c)), 3), "unet": round(float(np.median(f_u)), 3)}
     Path("results").mkdir(exist_ok=True)
     Path("results/test_metrics.json").write_text(json.dumps(out, indent=2))
     print(json.dumps(out, indent=2))
@@ -77,9 +92,10 @@ def main():
         bars = ax.bar(x + (i - 0.5) * 0.38, v, 0.38, color=c, label=lab)
         ax.bar_label(bars, fmt="%.2f", fontsize=8, padding=2)
     ax.set_xticks(x, labels)
-    ax.set_ylim(0, 1.05)
+    ax.set_ylim(0, 1.18)
     ax.set_title(f"DeepCrack test set ({len(imgs)} images, unseen during training and tuning)")
-    ax.legend(frameon=False, loc="upper left", fontsize=9)
+    ax.legend(frameon=False, loc="upper center", ncol=2, fontsize=9)
+    ax.set_yticks(np.arange(0, 1.01, 0.2))
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
     fig.savefig(figs / "metrics.png", dpi=130)

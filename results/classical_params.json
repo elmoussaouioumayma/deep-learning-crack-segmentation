@@ -1,8 +1,45 @@
 {
-  "kernel": 31,
-  "sigma": 2.0,
-  "k": 2.0,
-  "min_area": 30,
-  "min_elong": 3.0,
-  "train_f1": 0.7657
+  "kernel": 121,
+  "sigma": 0.0,
+  "k": 1.5,
+  "min_area": 50,
+  "min_elong": 4.0,
+  "train_f1": 0.8547,
+  "n_tuning_images": 80,
+  "grid": {
+    "kernel": [
+      31,
+      51,
+      81,
+      101,
+      121,
+      151,
+      201
+    ],
+    "sigma": [
+      0.0,
+      1.0
+    ],
+    "k": [
+      null,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "min_area": [
+      20,
+      50,
+      80,
+      120,
+      200
+    ],
+    "min_elong": [
+      3.0,
+      4.0,
+      5.0,
+      6.0,
+      8.0
+    ]
+  },
+  "n_combinations": 1400
 }
