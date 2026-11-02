@@ -27,7 +27,7 @@ def main():
     probs = predict_probs(model, [v[0] for v in val], "cpu")
     thr, f1 = best_threshold(probs, [v[1] for v in val])
     ck = torch.load(a.weights, map_location="cpu")
-    ck.update(threshold=thr, val_f1=f1)
+    ck.update(threshold=thr, val_f1=float(f1))
     torch.save(ck, a.weights)
     print(f"threshold {old:.2f} -> {thr:.2f}  (validation F1 {f1:.4f}, epoch {ck.get('epoch')})")
 

@@ -117,7 +117,7 @@ def main():
         if f1 > best_f1:
             best_f1 = f1
             torch.save({"state_dict": model.state_dict(), "base": a.base, "threshold": thr,
-                        "val_f1": f1, "epoch": epoch}, out / "unet.pt")
+                        "val_f1": float(f1), "epoch": epoch}, out / "unet.pt")
             flag = "  <- best"
         print(f"epoch {epoch:3d}  loss {np.mean(losses):.3f}  val F1 {f1:.3f} (thr {thr:.2f})  {dt:.0f}s{flag}")
     log.close()

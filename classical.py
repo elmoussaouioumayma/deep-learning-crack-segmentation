@@ -67,10 +67,10 @@ def segment(rgb, p: ClassicalParams):
     return keep_blobs(blob_stats(mask), p.min_area, p.min_elong)
 
 
-# The first, smaller grid had its best values on the edges (kernel 31, sigma 2, min_area 30, min_elong 3),
-# so the grid was extended in every direction around them.
-GRID = dict(kernel=[15, 21, 31, 41, 51], sigma=[1.0, 2.0, 3.0], k=[None, 1.5, 2.0, 2.5, 3.0],
-            min_area=[10, 20, 30, 50], min_elong=[2.0, 3.0, 4.0, 5.0])
+# The first, smaller grid had its best values on its edges, so it was extended (twice) until the
+# best combination lay inside the grid.
+GRID = dict(kernel=[31, 51, 81, 101, 121, 151, 201], sigma=[0.0, 1.0], k=[None, 1.0, 1.5, 2.0],
+            min_area=[20, 50, 80, 120, 200], min_elong=[3.0, 4.0, 5.0, 6.0, 8.0])
 
 
 def _search(args):
