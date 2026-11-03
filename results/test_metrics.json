@@ -1,0 +1,19 @@
+{
+  "classical": {
+    "precision": 0.856,
+    "recall": 0.873,
+    "f1_tol2": 0.864,
+    "f1_strict": 0.779,
+    "mean_iou": 0.634
+  },
+  "unet": {
+    "precision": 0.957,
+    "recall": 0.865,
+    "f1_tol2": 0.909,
+    "f1_strict": 0.798,
+    "mean_iou": 0.658
+  },
+  "n_test_images": 237,
+  "unet_better_on_images": 170,
+  "threshold": 0.88
+}

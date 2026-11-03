@@ -1,0 +1,8 @@
+{
+  "kernel": 71,
+  "sigma": 1.0,
+  "k": 1.5,
+  "min_area": 60,
+  "min_elong": 4.0,
+  "train_f1": 0.8363
+}
